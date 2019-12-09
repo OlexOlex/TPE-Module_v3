@@ -1,0 +1,12 @@
+Custom changes to enable setting time via GPS data/etc
+
+NTPClient.c:
+
+void NTPClient::setCurrentEpocSecs(unsigned long secsSinceSeventiesUtc){
+    this->_currentEpoc = secsSinceSeventiesUtc;
+    this->_lastUpdate = millis();
+}
+
+NTPClient.h:
+
+void setCurrentEpocSecs(unsigned long secsSinceSeventiesUtc);
