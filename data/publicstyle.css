@@ -1,0 +1,16 @@
+ 
+body {
+    /* page width - adjust here or enhance headerscripts.js to automatically set this property to the document */
+    width: 325px;
+    /* default font for every page*/
+    font: 2 Verdana, Arial, sans-serif;
+    /* default text color */
+    color: #ffffff;
+    /* default background color - slightly blue */
+    background: #303540;
+}
+
+h1 {
+    /* size 4, Arial or at least sans-serif */
+    font: 4 Verdana, Arial, sans-serif;
+}
