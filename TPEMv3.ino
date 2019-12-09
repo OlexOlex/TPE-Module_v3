@@ -115,40 +115,15 @@
    * GPS areas
    * Time + Time areas
    * combining areas with time
-   * language according to user + language config without password
 
 
-   * before rollout:
+   * improvements:
       * serial output of read adminpassword and both WiFi station + ap ssids + passwords). In case someone forgets them
               (Adminpw - better don't?, station DONE, ap DONE)
       * listen on special pin for high signal for factory default reset or on serial for reset
           config command (complex work since there is GPS as well... should be included there)
           -> opening the module enables recovery
-      * sample slave information file (use html comments for usage description)
-      * manual
-      * documentation
-      * example peripherial devices (vibrators with/without own battery, magnetic lock,
-         shocker, pump + plug + mag valve + overpressure-valve, etc)
       * proper UI design
-
-   TESTS:
-   * works on which system?
-      * Windows 7, (8,) 8.1, 10
-      * Linux (ack, curl as well)
-      * Android (ack, FF)
-      * Mac OS
-      * Apple Phone
-      * Windows phone
-   * works on which browsers? (and from which version on?)
-      * Firefox (Linux, Android ack)
-      * Chrome
-      * IE
-      * Android web view
-      * Mac-standard
-   * long term test - run for 2 months from server
-      * power from server
-      * frequent requests changing outputs/logging in, out and re-login without logout + server connection used for requests -> frequent usage. Log on server
-   * practicability tests (use it!)
  */
 
 // well, we want to provide a webserver, don't we?
@@ -161,10 +136,10 @@
 #include <DNSServer.h>
 // stuff for OTA capability
 #include <ArduinoOTA.h>
-// we want to answer ANY request from clients when thy are in this modules network
+// we want to answer ANY request from clients when they are in this modules network
 #include <ESP8266mDNS.h>
 
-// if defined, the output pins and power enable/disable pin are defined for version one modules
+// if defined, the output pins and power enable/disable pin are defined for version one modules (not tested yet!)
 //#define LEGACYMODULECOMPATIBILITY
 
 #ifndef LEGACYMODULECOMPATIBILITY
