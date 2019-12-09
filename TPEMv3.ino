@@ -1,5 +1,5 @@
 /**
-   Copyright Olex (c) 2017
+   Copyright Olex (c) 2019
 
    Uses Arduino standard libraries, ESP8266WiFi.h, ESP8266WebServer.h, FS.h
 */
@@ -26,7 +26,7 @@
  * /module/wifi
  *      Structure: line 1: SSID, line 2: password, line 3: SSID2, line 4: password2, ...
  * /module/users
- *      Structure per line: name [' '] role(char a/b/v) [' '] password
+ *      Structure per line: name [' '] role(char a/c/v) [' '] password
  *
  * /module/rules
  *      Structure per line: [name (at least 2 chars, no space/newline)] [' '] [priority] [' '] [inside/outside (0/1)] [' '] [area1] [' '] ... [areanN] [' '] ['t'] [' '] [action1] [' '] ... [actionN]
