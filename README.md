@@ -47,6 +47,7 @@ Runs on any newer ESP8266 module running NodeMCU (the ones with more RAM than th
 * No password hashing (could be read by flashing a custom firmware, that reads all files)
 * Remote controlling via requests to a remote server url do not work any more since the library handling HTTPS requests changed
 * Rules do not work yet, so geoppfencing and other things like reacting on low or full battery states is not possible
+* File upload not perfectly secure
 
 
 ## Material used for this "full feature" Model:
