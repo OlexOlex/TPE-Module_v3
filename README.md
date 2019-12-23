@@ -45,4 +45,4 @@ Don't use GPS anyway? Disable it simply by replacing the code in setTimeFromGPS(
 ### Disclaimer and License ###
 This project is a hobby project thet grew over time, I cannot guarantee anything but that I had no bad intentions when writing this (does not do damage on my purpose), but it's "as is", use at your own risk, there are flaws and even thou I tested it regularly there are probably bugs in it.
 
-License see Licensse.txt
+License see License.txt
