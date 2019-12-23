@@ -13,12 +13,13 @@ Runs on any newer ESP8266 module running NodeMCU (the ones with more RAM than th
 * **Control via web page / web app**, works in virtually any modern browser on any system, as long as it's in the same network (Tested on linux and Android, only Windows seems to make trouble) - you can also control it with anything that can send HTTP-POST request, e.g. with curl or wget from a linux server, e.g. in a cronjob or bash-/shellscript on a Raspberry Pi
 * **No need for a dedicated app**, call the webpage from the private browsing window of your business cell phone and no traces are left, "Is my platform supported?" is answered by "If it has a browser and network access, most probably yes"
 * Controls up to **six outputs at LiPo-battery voltage (3,6-4.2V)** to control any peripherial device by dimming in 1024 steps (though the lower 150 are usually useless for vibrators), by turning it on/off or by a short pulse.
-* **User management** enables you to handle three or four different user types: admins can do everything, controlers can view the current state of the module and control the outputs, viewers can only see the current state of the module. The fourth user group would be unauthorized/not logged in users. Each user is identified by the name and has a role and a password he can change.
+* **User management** enables you to handle three or four different user types: "admin"s can do everything, "basic" can view the current state of the module and control the outputs, "viewer"s can only see the current state of the module. The fourth user group would be unauthorized/not logged in users. Each user is identified by the name and has a role and a password he can change.
 * Supports many **custom sequences for PWM outputs** Each sequence is a file in the filesystem with a simple and easy format, available sequence files are autodetected on boot. Name these files as you want the sequences to be shown in the drop down menus.
 * Runs at least for **13 hours idling** (WIFI acesspoint running, one client connected, simultaniously connected to a WIFI network, a few website requests, GPS off) with a 3,7V 1200mAh LiPo battery (uses approx. 90mA in idle). Without a client connected to the accesspoint, it runs over 14 hours. It **lasts longer than 30 hours** idling when it does not provide an accesspoint and GPS is off. Charge it for approximately 1.5 hours at 5V, 1A and you are good to go again. GPS enabled draws approximately additional 50mA, power draw on the outputs depends on the connected devise and the PWM ratio used.
 * Turns on on 1 sec button press, you can **turn it off on the website only when logged in as admin** - or customize the hardware by using a switch to turn it on and off.
 * **Local file server** to upload and manage the files on the module
 * **Custom webapp possible** since the module serves any web page or web application you upload and configure (any file named "public[...]" will be served without login-checks). The web app provided includes a custom file to provide information about the module or the wearer.
+* See the **GPS position**, or disable GPS for power saving
 * **Firmare update via upload** - upload the desired firmware binary file, then provide the hash sum for the device to chekc the file before updating.
 * "Turn all off" as some kind of "emergency off"
 * **86x51x21,5mm** in size - smaller than a pack of cigaretts. Depending on your skills and the features you want your module to have, you can build it in different cases.
@@ -32,13 +33,16 @@ Runs on any newer ESP8266 module running NodeMCU (the ones with more RAM than th
 * Material cost: **approximately 18€** for me when buying the stuff in China.
 * **Relatively easy to build, most parts are premanufactured ready-to-use-modules**, the connectors are common 3.5mm stereo jacks
 * Any 3-4V vibrating device with a remote control on a cable can easily be converted to fit this module (if you solder a socket to the original remote control, you can still use the device with the original remote control)
+* First time you flashed your module? If you use linux, use the provided upload script for initial file upload (Webapp files that make it more comfortable to configure the first user and uploads demo sequence files as well) or adapt it to a powershell script.
+* If no admin user is configured, any login credentials are temporarily acceppted
 
 ### Disadvantages:
 * It sometimes takes a while until the router knows the device under its configured name, so it might take some time until you can access it at http://[your configured servername here]
+* The larger a file is, the longer it takes to load. So keep your web app small.
 
 ### Minor "not as perfect as it could be" properties:
 * the ESP8266 Module does only support at maximum 4 client devices connected to its WIFI accesspoint
-* The requests to the module are unencrypted HTTP-POST requests - no ssl encryption
+* The requests to the module are unencrypted HTTP-POST requests - no ssl encryption possible
 * Web app optimized for mobile phone screen size
 * No password hashing (could be read by flashing a custom firmware, that reads all files)
 * Remote controlling via requests to a remote server url do not work any more since the library handling HTTPS requests changed
@@ -70,46 +74,14 @@ Detailed information and sample links to the product pages of some online shops 
 * An electric drilling machine (a vertical drilling machine is even more useful)
 * A 5mm steel drill for drilling the holes for the 3,5mm sockets to stick through the case, optionally an 8mm steel drill to widen the front of the holes to screw the nuts to the sockets
 * A 4mm drill and/or milling cutter for drilling the holes for the micro-USB socket (multiple holes next to each other becoming a slot)
-* A trianglular or semi-circle file for cleaning the hole for the micro-USB socket
+* A file for cleaning the hole for the micro-USB socket
 * Waterproof glue and hot glue or similar, to glue the components safely together and to the case (two component resin or silicon might work as well)
 * Something to measure and mark where to drill the holes in the case
 
 
+
 **Development environment**: Arduino  
 **Libraries used** (might not be a complete list): Arduino standard libraries for ESP8266, ESP8266WiFi.h, ESP8266WebServer.h, FS.h, NTPClient.h, WiFiUDP.h, DNSServer.h, ArduinoOTA.h, ESP8266mDNS.h
-
-#### Major changes to v1: ####
-
-Software:
-* Supports multiple users (saved in local file)
-* Four user groups: not logged in, viewer, guest/controller, admin (first not used yet in webapp)
-* Session tokens!
-* Requests still via HTTP Post/Put, responses are in JSON format
-* Now features a "real" web server that serves arbitrary files (except for the config files and users "database" file)
-* Therefore can serve any webpage/webapp you want, customize it!
-* Fileupload for generic files, use those 3MB of SPIFFS!
-* No more flashing or file writing/reading via USB-SerialAdapter, no bypass to files except for opening the device
-* OTA (Binary file upload plus user triggered update process)
-* GPS! Get the module's location. Or disable it to save power.
-* Hide it if you want to. Does only serve the page on /webapp if you don't want it to serve it on /. Optionally serves a dummy/decoy page on / ("oh, thats just my RaspberryPi I use to automatically water the plants.")
-* New webapp, no more static html-page (alter the existing one, upload any custom webapp you like, I'm no web developer)
-* Webapp way more comfortable to use than the old static served html page.
-* Controls for outputs send data immediately or as soon as you lift your finger from the screen or mouse button (Button, Sliders, dropdowns), no need to enter your password all the time
-* More options, more data, more controll (the T stands for "total", remember? ;) )
-* Upload script for initial file upload (Webapp files to configure the first user and demo sequence files)
-
-Hardware:
-* One more controllable output (now 6)
-* GPS module
-* Enable/disable GPS on hardware level (power off)
-* Flat foil-type button to save space for output no.6
-* no more USB-Serial adapter
-
-Broken, worked once until a library update, tried to fix it:
-* Control via a server (regularly sends requests via HTTPS to a server and reacts according to the response)
-
-Planned features:
-* Rules (on battery state, time, geofencing via GPS and/or WIFI, etc.)
 
 
 #### Notes ####
@@ -119,4 +91,4 @@ Don't use GPS anyway? Disable it simply by replacing the code in setTimeFromGPS(
 ### Disclaimer and License ###
 This project is a hobby project thet grew over time, I cannot guarantee anything but that I had no bad intentions when writing this (does not do damage on my purpose), but it's "as is", use at your own risk, there are flaws and even thou I tested it regularly there are probably bugs in it.
 
-License see License.txt
+License see License.txt, rights to and license of the ractive.js library used in the demo web app see https://github.com/ractivejs/ractive and the according LICENSE.md file.
