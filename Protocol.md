@@ -6,7 +6,7 @@ HTML paths:
 
 /webApp sends webApp html file "public[something]" as configured, default: "publicWebApp.html" or error page if the file is not found in the file system.
 
-/info sends info "page" (the one without surrounding <html></html>) as configured.
+/info sends info "page" (the one without surrounding \<html\>\</html\>) as configured.
 
 /public[something] sends file public[something] if found in file system, else, depending on configuration, an error message or no response
 
