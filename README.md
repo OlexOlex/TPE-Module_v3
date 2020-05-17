@@ -82,7 +82,7 @@ Detailed information and sample links to the product pages of some online shops 
 
 
 **Development environment**: Arduino  
-**Libraries used** (might not be a complete list): Arduino standard libraries for ESP8266, ESP8266WiFi.h, ESP8266WebServer.h, FS.h, NTPClient.h, WiFiUDP.h, DNSServer.h, ArduinoOTA.h, ESP8266mDNS.h
+**Libraries used** (might not be a complete list): Adafruit ESP8266, esp8266_mDNS, NTPClient, ArduinoOTA. These are: Arduino standard libraries for ESP8266, ESP8266WiFi.h, ESP8266WebServer.h, FS.h,, ESP8266mDNS.h NTPClient.h, WiFiUDP.h, DNSServer.h, ArduinoOTA.h
 
 
 #### Notes ####
