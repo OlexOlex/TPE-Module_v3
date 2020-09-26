@@ -1,0 +1,616 @@
+<!DOCTYPE html><html>
+<head>
+  <meta charset='ASCII'>
+  <link rel='shortcut icon' href='favicon.ico' />
+  <link rel='stylesheet' type="text/css" href='public.css' />
+  <meta name='viewport' content='initial-scale=1, maximum-scale=5' />
+  <script src="publicractive.js" type="text/javascript"></script>
+  <script src="publicapp.js" type="text/javascript"></script>
+
+</head>
+<body>
+
+  <div id="header"></div><br>
+  <div id="content"></div>
+
+
+  <script id="menunouser" type="text/ractive">
+    <div type="menudiv">
+    <button class="menubtn" onclick="showControl()">Control</button>
+    <button class="menubtn" onclick="showInfo()">Info</button>
+    <button class="menubtn" onclick="showStatus()">Status</button>
+    <button class="menubtn" onclick="showGps()">GPS</button>
+    <button class="menubtn" onclick="showLoginScreen()">Login</button>
+    </div>
+  </script>
+
+  <script id="menubase" type="text/ractive">
+    <div type="menudiv">
+    <button class="menubtn" onclick="showControl()" id="menucontrol">Control</button>
+    <button class="menubtn" onclick="showInfo()" id="menuinfo">Info</button>
+    <button class="menubtn" onclick="showStatus()" id="menustatus">Status</button>
+    <button class="menubtn" onclick="showGps()" id="menugpst">GPS</button>
+    <button class="menubtn" onclick="showAccount()" id="menuaccount">Account</button>
+    <button class="menubtn" onclick="logout()">Logout</button>
+    </div>
+  </script>
+
+  <script id="menuadmin" type="text/ractive">
+    <div class="menudiv">
+      <button class="menubtn" onclick="showControl()" id="menucontrol">Control</button>
+      <button class="menubtn" onclick="showInfo()" id="menuinfo">Info</button>
+      <button class="menubtn" onclick="showStatus()" id="menustatus">Status</button>
+      <button class="menubtn" onclick="showGps()" id="menugps">GPS</button>
+      <button class="menubtn" onclick="showAdminStatus()">Admin</button>
+      <button class="menubtn" onclick="logout()">Logout</button>
+    </div>
+  </script>
+
+  <script id="adminmenu" type="text/ractive">
+    <div class="menudiv">
+      <button class="menubtn" onclick="showControl()">Back</button>
+      <button class="menubtn" onclick="showAdminStatus()" id="menuadminstatus">Status</button>
+      <button class="menubtn" onclick="showAdminOutputs()" id="menuadminoutputs">Outputs</button>
+      <button class="menubtn" onclick="showAdminModule()" id="menuadminmodule">Module</button>
+      <button class="menubtn" onclick="showAdminWifi()" id="menuadminwifi">WiFi</button>
+      <button class="menubtn" onclick="showAdminRules()" id="menuadminrules">Rules</button>
+      <button class="menubtn" onclick="showAdminFiles()" id="menuadminfiles">Files</button>
+      <button class="menubtn" onclick="showAdminUsers()" id="menuadminusers">Users</button>
+      <button class="menubtn" onclick="showAccount()" id="menuaccount">Account</button>
+    </div>
+  </script>
+
+
+  <script id="loginscreen" type="text/ractive">
+    <br/>
+    <table type="formtable" onkeypress="return loginKeyPress(event)">
+      <tr><td>Name:</td><td><input type="text" id="name"/></td></tr>
+      <tr><td>Password:</td><td><input type="password" id="pwd"/></td></tr>
+      <tr><td></td><td></td></tr>
+      <tr><td></td><td><button onclick="login()">Submit</button></td></tr>
+    </table><br/>
+    <div id="feedback"></div>
+    <br/><br/>
+  </script>
+
+
+  <script id="control" type="text/ractive">
+    {{#each outputs}}
+      {{#if this.type == 'p'}}
+        <table width=100%><tr>
+          <td>{{this.name}} is currently {{this.value}}</td></tr>
+          <tr><td><div id="slidecontainer">
+            <input type="range" id={{"pin" + this.id}} onchange="setOutputPWM({{this.id}})" min="0" max="1023" value="{{this.value}}" class="slider"
+              {{#if this.seq != "-"}} disabled {{/if}}
+            >
+          </div></td></tr>
+          <tr><td><select id={{"seq" + this.id}} value="{{this.seq}}" onchange="setSequence({{this.id}})">
+            {{#each sequences}}
+              <option value="{{this}}">{{this}}</option>
+            {{/each}}
+          </select>
+          </td></tr>
+        </table>
+      {{/if}}
+      {{#if this.type == 't'}}
+      <table><tr>
+        <td>{{this.name}}: &nbsp;</td>
+        <td>
+          <label class="switch">
+            <input type="checkbox" checked={{this.value}} id={{this.id}} onchange="toggle({{this.id}})">
+            <span class="binslider round"></span>
+          </label>
+        </td>
+      </tr></table>
+      {{/if}}
+      {{#if this.type == 'b'}}
+      <table><tr>
+        <td>{{this.name}}: &nbsp;</td>
+        <td>
+          <button class="firebutton" id={{this.id}} onclick='pulseOp({{this.id}})'>Fire</button>
+        </td>
+      </tr></table>
+      {{/if}}
+      {{#if (this.type != 'n')}}
+        <hr><br/>
+      {{/if}}
+    {{/each}}
+    <table><tr>
+      <td>All off: &nbsp;</td>
+      <td><button class="firebutton red" onclick='allOutputsOff()'>All off</button>
+      <!--<label class="switch">
+          <input type="checkbox" checked={{alloff}}>
+          <span class="binslider round red"></span>
+        </label>-->
+      </td>
+    </tr></table>
+    <br><br>
+  </script>
+
+
+  <script id="status" type="text/ractive">
+    <table>
+      <tr><td><h4>Module status</h4></td></tr>
+    </table>
+    <table class="datatable">
+    <tr><td>Module time:</td><td>{{moduleday}}.{{modulemonth}}.{{moduleyear}}, {{modulehours}}:{{moduleminutes}} {{moduleseconds}} sec</td></tr>
+      <tr><td>Battery:</td><td>{{vbat}}V (~{{vpercent}}%) &nbsp;
+        {{#if (vpercent > 75)}}
+          <span class="green">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        {{else}}
+          {{#if (vpercent > 50)}}
+            <span class="yellow">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          {{else}}
+            {{#if (vpercent > 25)}}
+              <span class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            {{else}}
+              <span class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            {{/if}}
+          {{/if}}
+        {{/if}}
+      </td></tr>
+      {{#if ssid}}
+        <tr><td>Connected to WiFi:</td><td>{{ssid}}</td></tr>
+        <tr><td>WiFi client IP:</td><td>{{ip}}</td></tr>
+        <tr><td>hostname in WiFi:</td><td>{{hostname}}</td></tr>
+      {{/if}}
+      {{#if apssid}}
+        <tr><td>Module Wifi name:</td><td>{{apssid}}</td></tr>
+        <tr><td>Module Wifi IP:</td><td>{{apip}}</td></tr>
+      {{/if}}
+      {{#if gpsstate == "enabled"}}
+        <tr><td>Last GPS signal:</td><td>{{lastgpsfix}} UTC</td></tr>
+      {{else}}
+          <tr><td>GPS disabled</td><td></td></tr>
+      {{/if}}
+    </table>
+    <br/><br/>
+  </script>
+
+  <script id="info" type="text/ractive">
+    <div id="infodiv"></div>
+  </script>
+
+  <script id="gps" type="text/ractive">
+    <table>
+      <tr><td><h4>GPS status</h4></td></tr>
+    </table>
+    {{#if gps.gpsstate == "enabled"}}
+    <table class="datatable">
+      <tr><td>Time of last position fix:</td><td>{{gps.lastgpsfix}} sec UTC</td></tr>
+      <tr><td>Position:</td><td>{{gps.lat}}, {{gps.lon}} <a target='_blank'
+      href='https://www.openstreetmap.org/?mlat={{gps.mlatpos}}&mlon={{gps.mlonpos}}#map=16'>
+      OpenStreetMap</a></td></tr>
+      <tr><td>Elevation:</td><td>{{gps.elev}}m</td></tr>
+      <tr><td>Ground Speed:</td><td>{{gps.gndspeed}}km/h</td></tr>
+      <tr><td>Course:</td><td>{{gps.course}}&#176;</td></tr>
+      <tr><td>Horizontal Dillution</td><td>est. {{gps.hordil}}m</td></tr>
+      <tr><td>Position Fix:</td><td>
+      {{#if gps.posfix==0}}
+        No Position Fix
+      {{/if}}
+      {{#if gps.posfix==1}}
+        Standard 2D/3D GPS fix
+      {{/if}}
+      {{#if gps.posfix==2}}
+        Differential Position Fix
+      {{/if}}
+      {{#if gps.posfix==6}}
+        Estimate Position Fix
+      {{/if}}
+      </td></tr>
+      <tr><td>Satellites used:</td><td>{{gps.numsat}}</td></tr>
+    </table>
+    {{else}}
+    GPS disabled
+    {{/if}}
+    <br/><br/>
+  </script>
+
+
+  <script id="adminstatus" type="text/ractive">
+    <table>
+      <tr><td><h4>Module status</h4></td></tr>
+    </table>
+    <table class="datatable">
+    <tr><td>Firmware version:</td><td>{{fwversion}}</td></tr>
+    <tr><td>Module time:</td><td>{{moduleday}}.{{modulemonth}}.{{moduleyear}}, {{modulehours}}:{{moduleminutes}} {{moduleseconds}} sec</td></tr>
+      <tr><td>Battery:</td><td>{{vbat}}V &nbsp; {{vpercent}}% &nbsp;
+        {{#if (vpercent > 75)}}
+          <span class="green">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        {{else}}
+          {{#if (vpercent > 50)}}
+            <span class="yellow">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          {{else}}
+            {{#if (vpercent > 25)}}
+              <span class="orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            {{else}}
+              <span class="red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            {{/if}}
+          {{/if}}
+        {{/if}}
+      </td></tr>
+      {{#if (gpsstate == "enabled")}}
+      <tr><td>Last GPS signal:</td><td>{{lastgpsfix}} sec UTC</td></tr>
+      {{/if}}
+      {{#if wifiname}}
+        <tr><td>Connected to WiFi:</td><td>{{ssid}}</td></tr>
+        <tr><td>WiFi client IP:</td><td>{{ip}}</td></tr>
+        <tr><td>hostname in WiFi:</td><td>{{hostname}}</td></tr>
+        <tr><td>Gateway IP:</td><td>{{gatewayip}}</td></tr>
+        <tr><td>DNS IP:</td><td>{{dnsip}}</td></tr>
+      {{/if}}
+      {{#if apname}}
+        <tr><td>Module Wifi name:</td><td>{{apssid}}</td></tr>
+        <tr><td>Module Wifi IP:</td><td>{{apip}}</td></tr>
+      {{/if}}
+      <tr><td>Chip ID</td><td>{{chipid}}</td></tr>
+      <tr><td>Free RAM</td><td>{{freeheap}} Byte</td></tr>
+      <tr><td>Total disk space</td><td>{{Math.round(totaldisk/10485.76)/100}} MB</td></tr>
+      <tr><td>Files use</td><td>
+        {{#if (useddisk > 1048576)}}
+          {{Math.round(useddisk/10485.76)/100}} MB
+        {{else}}
+          {{#if (useddisk > 1024)}}
+            {{Math.round(useddisk/10.24)/100}} KB
+          {{else}}
+            {{useddisk}} Byte
+          {{/if}}
+        {{/if}}
+        ({{filepercent}}%)
+      </td></tr>
+      <tr><td>Available disk space:</td><td>
+        {{#if (freedisk > 1048576)}}
+          {{Math.round(freedisk/10485.76)/100}} MB
+        {{else}}
+          {{#if (freedisk > 1024)}}
+            {{Math.round(freedisk/10.24)/100}} KB
+          {{else}}
+            {{freedisk}} Byte
+          {{/if}}
+        {{/if}}
+      </td></tr>
+    </table>
+    <br/><br/>
+  </script>
+
+  <script id="adminoutputs" type="text/ractive">
+    <table>
+      <tr><td><h4>Manage Outputs</h4></td></tr>
+    </table>
+    <hr>
+    {{#each outputs}}
+      <table>
+        <tr><td>Output {{this.id}}</td><td></td></tr>
+        <tr><td>Name:</td><td><input id={{"name" + this.id}} type="text" value={{this.name}}/></td></tr>
+        <tr><td>Function:</td>
+          <select id={{"type" + this.id}} value={{this.type}}>
+            <option value="p">Adjustable 0-1023</option>
+            <option value="t">Toggle On/Off</option>
+            <option value="b">Pulse</option>
+            <option value="n">Deactivated</option>
+          </select>
+        <td></td></tr>
+      </table>
+      <hr><br/>
+    {{/each}}
+    <button class="savebtn" onclick="setOutputConfig()">Save Configuration</button>
+    <br/><br/>&nbsp;
+  </script>
+
+  <script id="adminmodule" type="text/ractive">
+    <table>
+      <tr><td></td><td></td></tr>
+      <tr><td><h4>Manage module</h4></td><td></td></tr>
+      <tr><td></td><td></td></tr>
+      <tr><td>Web Page Title:</td><td><input type="text" value={{title}}  id="pagetitle"/></td></tr>
+      <tr>
+        <td>Slave info file:</td>
+        <td>
+          <input type="text" value={{infofile}} id="infofile"/>
+        </td>
+      </tr>
+      <tr>
+        <td>Hide Website:</td>
+        <td>
+          <label class="switch">
+            <input type="checkbox" checked={{hidesite}} id="hidesite"/>
+            <span class="binslider round"></span>
+          </label>
+        </td>
+      </tr>
+      <tr>
+        <td>Show dummy file:</td>
+        <td>
+          <label class="switch">
+            <input type="checkbox" checked={{showdummyfile}} {{#if(hidesite==1)}}disabled{{/if}} id="showdummyfile"/>
+            <span class="binslider round"></span>
+          </label>
+        </td>
+      </tr>
+      <tr>
+        <td>Dummy page file:</td>
+        <td>
+          <input type="text" value={{dummyfile}} {{#if hidesite==1 || showdummyfile == 0}}disabled{{/if}} id="dummyfile"/>
+        </td>
+      </tr>
+      <tr>
+        <td><h4>Network Time Server (NTP):</h4></td>
+        <td>
+          <input type="text" value={{ntpserver}}  id="ntpserver"/>
+        </td>
+      </tr>
+      <tr><h4>Remote Server</h4><td></td><td></td></tr>
+      <tr><td>Server function:</td>
+        <td>
+          <select value={{servermode}} id="servermode">
+            <option value="n">No remote Server</option>
+            <option value="s">Supervision only</option>
+            <option value="c">Full Control</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Server url:</td>
+        <td>
+          <input type="text" value={{serverurl}} {{#if(servermode=="n")}}disabled{{/if}} id="serverurl"/>
+        </td>
+      </tr>
+      <tr>
+        <td>Server port:</td>
+        <td>
+          <input type="number" min=0 max=65535 value={{serverport}} {{#if(servermode=="n")}}disabled{{/if}} id="serverport"/>
+        </td>
+      </tr>
+      <tr>
+        <td>Server cert SHA-1 fingerprint:</td>
+        <td>
+          <input type="text"  value={{certfingerprint}} {{#if(servermode=="n")}}disabled{{/if}} id="certfingerprint"/>
+        </td>
+      </tr>
+      <tr>
+        <td>Server contact interval:</td>
+        <td>
+          <input type="number" min=1 max=3600 value={{serverinterval}} {{#if(servermode=="n")}}disabled{{/if}} id="serverinterval"/> sec
+        </td>
+      </tr>
+      <tr>
+      <td><h4>GPS usage:</h4></td><td>
+        <select value={{gpsUsage}} id="gpsmode">
+          <option value=0>Off</option>
+          <option value=1>On</option>
+          <!--<option value=2>Four times per hour</option>
+          <option value=3>Twice per hour</option>
+          <option value=4>Every full hour</option>
+          <option value=5>Once daily</option>-->
+        </select>
+        </td>
+      </tr>
+      <tr>
+        <td><h4>Firmware update:</h4></td>
+        <td>
+          <label class="switch">
+            <input type="checkbox" checked={{fwupdate}} id="fwupdate"/>
+            <span class="binslider round"></span>
+          </label>
+        </td>
+      </tr>
+      <tr>
+        <td>Firmware file:</td>
+        <td>
+          <input type="text" id="fwupdatefile" {{#if(fwupdate==0)}}disabled{{/if}}/>
+        </td>
+      </tr>
+      <tr>
+        <td>Firmware file MD5 sum:</td>
+        <td>
+          <input type="text" id="fwmd5" {{#if(fwupdate==0)}}disabled{{/if}}/>
+        </td>
+      </tr>
+    </table>
+    <br/>
+    <button class="savebtn" onclick="setModuleConfig()">Save Configuration</button>
+    <br/><br/><br/><hr><br/>
+    <button  class="restartbutton" onclick="restart()">Restart Module</button>
+    <button  class="turnoffbutton" onclick="turnoff()" id="turnoffbutton">Turn Off Module</button>
+    <br/><br/>
+  </script>
+
+
+  <script id="adminwifi" type="text/ractive">
+    <h4>Local WiFi accesspoint:</h4>
+    <table>
+      <tr><td>Provide WiFi AP:</td><td>
+        <label class="switch">
+          <input type="checkbox" id="apon" checked={{apon}}>
+          <span class="binslider round"></span>
+        </label>
+      </td></tr>
+      <tr><td>WiFi name:</td><td><input type="text" id="apssid" value={{apssid}} {{#if(apon==0)}}disabled{{/if}}/></td></tr>
+      <tr><td>WiFi password</td><td><input type="password" id="appwd" {{#if(apon==0)}}disabled{{/if}} /></td></tr>
+      <tr><td></td><td></td></tr>
+      <tr><td><div id="apfeedbackdiv"></div></td><td><button class="savebtn" onclick="setWifiApConfig()">Save configuration</button><br/></td></tr>
+      {{#if (numwificlients != null)}}
+      <tr><td></td><td></td></tr>
+      <tr><td>Connected Devices:</td><td>{{numwificlients}}</td></tr>
+      {{/if}}
+    </table>
+    <hr><br/>
+    <h4>WiFi networks:</h4>
+    <table>
+      <tr><td>Connect to WiFis:</td><td>
+        <label class="switch">
+          <input type="checkbox" id="wifion" checked={{wifion}}>
+          <span class="binslider round"></span>
+        </label>
+      </td></tr>
+      <tr><td>use host name:</td><td><input type="text" id="hname" value={{hostname}}/></td></tr>
+      <tr><td></td><td>
+      <button class="savebtn" onclick="setWifiConfig()">Save configuration</button>
+      </td></tr>
+      <tr><td></td><td>&nbsp;</td></tr>
+      <tr><td>Known networks:</td><td>
+        <select id="wifitodel">
+          <option value="">Select Wifi to forget</option>
+        {{#each knownWifis}}
+          <option value={{this}}>{{this}}</option>
+        {{/each}}
+        </select>
+      </td></tr>
+      <tr><td></td><td>
+        <button class="savebtn" onclick="forgetWifi()">Forget selected WiFi</button>
+      </td></tr>
+    </table>
+    {{#if (wifion==1)}}
+      <br/>
+      Add WiFi network to connect to:<br/>
+      <table>
+        <tr><td>WiFi Name:</td><td><input type="text" id="newwifissid"/></td></tr>
+        <tr><td>WiFi Password</td><td><input type="password" id="newwifipwd"></td></tr>
+        <tr><td><button onclick="startWps()">Search via WPS</button></td><td><button class="savebtn" onclick="addWifi()">Add WiFi</button></td></tr>
+      </table>
+    {{/if}}
+    <br/><br/>
+  </script>
+
+
+  <script id="adminfiles" type="text/ractive">
+    <table>
+      <tr><td>Total disk space</td><td>{{Math.round(totaldisk/10485.76)/100}} MB</td></tr>
+      <tr><td>Files use</td><td>
+        {{#if (useddisk > 1048576)}}
+          {{Math.round(useddisk/10485.76)/100}} MB
+        {{else}}
+          {{#if (useddisk > 1024)}}
+            {{Math.round(useddisk/10.24)/100}} KB
+          {{else}}
+            {{useddisk}} Byte
+          {{/if}}
+        {{/if}}
+        ({{filepercent}}%)
+      </td></tr>
+      <tr><td>Available disk space:</td><td>
+        {{#if (freedisk > 1048576)}}
+          {{Math.round(freedisk/10485.76)/100}} MB
+        {{else}}
+          {{#if (freedisk > 1024)}}
+            {{Math.round(freedisk/10.24)/100}} KB
+          {{else}}
+            {{freedisk}} Byte
+          {{/if}}
+        {{/if}}
+      </td></tr>
+    </table>
+    <br/>
+    <hr/>
+    <br/>
+    <table class="datatable hightable">
+      <tr><th>File name</th><th>File size</th><th>Delete?</th></tr>
+      {{#each files}}
+        <tr>
+          <td><a href="{{this.name}}?user={{username}}&token={{token}}" target='_blank'>{{this.name}}</a></td>
+          <td>
+            {{#if (this.size > 1048576)}}
+              {{Math.round(this.size/10485.76)/100}} MB
+            {{else}}
+              {{#if (this.size > 1024)}}
+                {{Math.round(this.size/10.24)/100}} KB
+              {{else}}
+                {{this.size}} Byte
+              {{/if}}
+            {{/if}}
+          </td>
+          <td>
+            <label class="ckbcontainer">
+              <input type="checkbox" name="delckb" id={{this.name}}>
+              <span class="checkmark"></span>
+            </label>
+          </td>
+        </tr>
+      {{/each}}
+    </table>
+    {{#if (deletedfiles)}}
+      <br/><br/>
+      Deleted files:
+      {{#each deletedfiles}}
+        {{this}} &nbsp;
+      {{/each}}
+      <br/><br/>
+    {{/if}}
+    <br/>
+    <button class="savebtn" onclick="deleteFiles()">Delete selected files</button><br/>
+    <br/>
+    <hr/>
+    <br/>
+    <input type="file" id="filechooser"/>
+    <button class="savebtn" onclick="uploadFile()">Upload file</button><br/>
+    <div id="uploadprogress"></div>
+    <br/><br/>
+  </script>
+
+  <script id="adminusers" type="text/ractive">
+    <table>
+    <tr>
+      <td><h4>Manage users</h4></td><td></td><td></td>
+    </tr>
+    <tr><td></td><td></td><td></td></tr>
+    {{#each users}}
+      <tr>
+        <td>{{this.name}}</td>
+        <td>
+          <select id={{this.name + "role"}} value="{{this.role}}">
+            <option value="a">Admin</option>
+            <option value="b">Basic</option>
+            <option value="v">Viewer</option>
+          </select>
+        </td>
+        <td>
+          &nbsp;&nbsp;<button class="delbtn" onclick="delUser('{{this.name}}')">Remove</button>
+        </td>
+      </tr>
+    {{/each}}
+    </table><br><br>
+    <button class="savebtn" onclick="updateUsers({{this.users}})">Save Configuration</button>
+    <br/><br><hr><br/>
+    New user:
+    <table>
+    <tr><td>Name:</td><td><input type="text" id="newUser"/></td></tr>
+    <tr><td>Password:</td><td><input type="password" id="newUserPwd"/></td></tr>
+    <tr><td>Role:</td><td>
+      <select id="newUserRole" value="v">
+        <option value="a">Admin</option>
+        <option value="b">Basic</option>
+        <option value="v">Viewer</option>
+    </select></td></tr>
+    <tr><td></td><td>
+          &nbsp;&nbsp;<button class="savebtn" onclick="addUser()">Add User</button>
+    </td></tr>
+    </table>
+    <br/><br/>
+  </script>
+
+  <script id="account" type="text/ractive">
+    <table>
+      <tr><td><h4>Account of {{name}}</h4></td><td>Role:
+      {{#each roles}}
+        {{#if (this.id == role)}}{{this.name}}{{/if}}
+      {{/each}}
+      </td></tr>
+      <tr><td>&nbsp;</td><td></td></tr>
+      <tr><td></td><td></td></tr>
+      <tr><td>Change password </td><td></td></tr>
+      <tr><td></td><td></td></tr>
+      <tr><td>Current password: </td><td><input type="password" id="pwd"/></td></tr>
+      <tr><td>New password: </td><td><input type="password" id="newPwd"/></td></tr>
+      <tr><td>Repeat password: </td><td><input type="password" id="newPwd2"/></td></tr>
+    </table>
+    <br/><br/>
+    <button class="savebtn" onclick="changePassword()">Change password</button>
+    <br/><br/>
+    <div id="pwdfeedbackdiv"></div>
+    <br/><br/>
+  </script>
+
+</body>
+</html>
+ 

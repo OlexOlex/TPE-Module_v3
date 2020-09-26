@@ -1,0 +1,350 @@
+
+body {
+  max-width: 500px;
+  font-family: sans-serif;
+  background-color: #eeeeee;
+  padding: 0px;
+  margin: 0px;
+}
+div.menudiv {
+  background-color: #aaaaaa;
+  margin: 0px;
+  padding: 7px;
+}
+div.content {
+  padding: 0px;
+}
+div.infodiv {
+  margin: auto;
+}
+span.green {
+  background-color: #40bf40;
+}
+span.yellow {
+  background-color: #ffd11a;
+}
+span.orange {
+  background-color: #f5a834;
+}
+span.red {
+  background-color: #f00e22;
+}
+
+table {
+  width: 100%;
+}
+table.tr.td {
+  margin-top: 6px;
+}
+table.datatable {
+  width: 100%;
+}
+.datatable tr {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+.datatable tr:nth-child(odd) {
+  background-color: #e2e2e2;
+}
+.datatable th {
+  text-align: left;
+}
+.hightable tr {
+  line-height: 28px;
+}
+
+hr {
+  border: 0;
+  height: 0;
+  box-shadow: 0 0 4px 1px #aaaaaa;
+  margin-top: 20px;
+}
+hr:after {
+  content: "\00a0";
+}
+
+/* button stuff */
+button {
+    border: none; /* Remove borders */
+    color: #000000; /* Add a text color */
+    padding: 7px 18px; /* Add some padding */
+    cursor: pointer; /* Add a pointer cursor on mouse-over */
+    background-color: #d0d0d0;
+    font-size: 16px;
+}
+
+button.menubtn {
+  color: #eeeeee;
+  background-color: #222222;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+button.savebtn {
+  float: right;
+}
+
+button.firebutton {
+  background-color: #2196F3;
+  border-radius: 34px;
+  color: #ffffff;
+}
+button.firebutton.red {
+  background-color: #ee6060;
+  border-radius: 34px;
+  color: #ffffff;
+}
+button.firebutton:active{
+  background-color: #1180e0;
+}
+button.restartbutton {
+  background-color: #cc0000;
+  border-radius: 34px;
+  color: #ffffff;
+}
+button.restartbutton:active{
+  background-color: #990000;
+}
+button.turnoffbutton {
+  background-color: #cc0000;
+  border-radius: 34px;
+  color: #ffffff;
+  float: right;
+}
+button.turnoffbutton:active{
+  background-color: #990000;
+}
+
+
+/* /button stuff */
+
+
+input[type=text]{
+  border: 3px solid #ddd;
+  padding: 3%;
+}
+input[type=text]:focus {
+    border: 3px solid #555;
+}
+input[type=password]{
+  border: 3px solid #ddd;
+  padding: 3%;
+}
+input[type=password]:focus {
+    border: 3px solid #555;
+}
+
+
+/* select box stuff */
+select {
+   background: #d0d0d0;
+   width: 100%;
+   padding: 5px;
+   font-size: 16px;
+   line-height: 1;
+   border: 0;
+   border-radius: 0;
+   height: 34px;
+   -webkit-appearance: none;
+   }
+/* /select box stuff */
+
+
+
+/* range slider stuff */
+#slidecontainer {
+    width: 100%; /* Width of the outside container */
+}
+
+/* The slider itself */
+.slider {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    width: 95%; /* Full-width */
+    height: 35px; /* Specified height */
+    outline: none; /* Remove outline */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+}
+
+
+/* The slider handle (use webkit (Chrome, Opera, Safari, Edge) and moz (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    background: #2196F3; /* background */
+    cursor: pointer; /* Cursor on hover */
+    border-radius: 50%;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    background: #2196F3; /* background */
+    cursor: pointer; /* Cursor on hover */
+    border-radius: 50%;
+}
+/* /range slider stuff */
+
+/* slider (toggle button) stuff */
+.switch {
+ position: relative;
+ display: inline-block;
+ width: 60px;
+ height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {display:none;}
+
+/* The slider */
+.binslider {
+ position: absolute;
+ cursor: pointer;
+ top: 0;
+ left: 0;
+ right: 0;
+ bottom: 0;
+ background-color: #ccc;
+ -webkit-transition: .4s;
+ transition: .4s;
+}
+
+.binslider:before {
+ position: absolute;
+ content: "";
+ height: 26px;
+ width: 26px;
+ left: 4px;
+ bottom: 4px;
+ background-color: white;
+ -webkit-transition: .4s;
+ transition: .4s;
+}
+
+input:checked + .binslider {
+ background-color: #2196F3;
+}
+input:checked + .binslider.red {
+ background-color: #ee6060;
+}
+input:not(checked) + .binslider{
+ /*background-color: #91d6ee;*/
+ background-color: #0a6fc2;
+}
+input:not(checked) + .binslider.red {
+ background-color: #eeb0b0;
+}
+
+input:focus + .binslider {
+ box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .binslider:before {
+ -webkit-transform: translateX(26px);
+ -ms-transform: translateX(26px);
+ transform: translateX(26px);
+}
+
+/*deactivated slider*/
+input:disabled + .binslider {
+  background-color: #888888;
+}
+
+/* Rounded sliders */
+.binslider.round {
+ border-radius: 34px;
+}
+
+.binslider.round:before {
+ border-radius: 50%;
+}
+/* /slider (toggle button) stuff */
+
+
+/* checkbox stuff */
+/* Customize the label (the container) */
+.ckbcontainer {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 24px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.ckbcontainer input {
+  position: absolute;
+  opacity: 0;
+  background-color: #aaa;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #ddd;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #bbb;
+}
+
+.ckbcontainer{
+   margin-top: 0px;
+   padding-top: 0px;
+}
+
+/* On mouse-over, add a grey background color */
+.ckbcontainer:hover input ~ .checkmark {
+  background-color: #bbb;
+  border-color: #900e22;
+}
+
+/* When the checkbox is checked, add a blue background */
+.ckbcontainer input:checked ~ .checkmark {
+  background-color: #f00e22;
+  border-color: #900e22;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.ckbcontainer input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.ckbcontainer .checkmark:after {
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+/* /checkbox stuff */
+ 
